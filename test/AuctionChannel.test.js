@@ -37,11 +37,11 @@ contract('Auction Channel', ([auctioneer, assistant]) => {
 
     it('should update winner bid', async () => {
         const userHash = "user123ds";
-        const bidValue = 123213;
+        const bidValue = 20000000;
         const previousBidHash = "fdsgfd";
 
         const fingerprint = web3Utils.soliditySha3(
-            'updatingAuctionWinner',
+            'auctionBid',
             userHash,
             bidValue,
             previousBidHash

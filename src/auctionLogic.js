@@ -1,6 +1,5 @@
 const AuctionChannel = artifacts.require("AuctionChannel");
 
-const web3Utils = require('web3-utils');
 const fs = require('fs');
 const Web3 = require('web3');
 
@@ -29,7 +28,7 @@ export class AuctionLogic {
         const challengePeriod = params.challengePeriod;
         const minBid = params.minBid;
 
-        const fingerprint = web3Utils.soliditySha3(
+        const fingerprint = this.web3.utils.soliditySha3(
             'openingAuctionChannel',
             auctioneer,
             assistant,
@@ -60,7 +59,7 @@ export class AuctionLogic {
      * signature for opening channel
      */
     async acceptOpeningChannel (channel) {
-        const fingerprint = web3Utils.soliditySha3(
+        const fingerprint = this.web3.utils.soliditySha3(
             'openingAuctionChannel',
             auctioneer,
             assistant,
@@ -111,9 +110,8 @@ export class AuctionLogic {
             throw new Error('bidValue is too low')
         }
         
-        const fingerprint = web3Utils.soliditySha3(
-            'newBid',
-            isAskBid,
+        const fingerprint = this.web3.utils.soliditySha3(
+            'auctionBid',
             userHash,
             bidValue
         );
@@ -147,9 +145,8 @@ export class AuctionLogic {
      * @param bid object representing bid with proposal side signature
      */
     async acceptBid (bid) {
-        const fingerprint = web3Utils.soliditySha3(
-            'newBid',
-            bid.isAskBid,
+        const fingerprint = this.web3.utils.soliditySha3(
+            'auctionBid',
             bid.userHash,
             bid.bidValue
         );
@@ -223,7 +220,7 @@ export class AuctionLogic {
     calculateBidHash(bid) {
         let userHash = bid.userHash;
         let bidValue = bid.bidValue;
-        return web3Utils.soliditySha3(userHash + bidValue);
+        return this.web3.utils.soliditySha3(userHash + bidValue);
     }
 
     // Get the latest bid from the storage

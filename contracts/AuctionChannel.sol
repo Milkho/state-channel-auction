@@ -68,7 +68,7 @@ contract AuctionChannel is ECRecovery {
 
         bytes32 _fingerprint = keccak256(
             abi.encodePacked(
-                "updatingAuctionWinner",
+                "auctionBid",
                 _userHash,
                 _bidValue,
                 _previousAskBidHash
@@ -77,10 +77,10 @@ contract AuctionChannel is ECRecovery {
 
         _fingerprint = toEthSignedMessageHash(_fingerprint);
 
-        // require(auctioneer == ECRecovery.recover(_fingerprint, _signatureAuctioneer));
-        // require(assistant == ECRecovery.recover(_fingerprint, _signatureAssistant));
-        // require(_bidValue > winnerBidValue);
-        // require(_bidValue >= minBidValue);
+        require(auctioneer == recover(_fingerprint, _signatureAuctioneer));
+        require(assistant == recover(_fingerprint, _signatureAssistant));
+        require(_bidValue > winnerBidValue);
+        require(_bidValue >= minBidValue);
 
         winnerUserHash = _userHash;
         winnerBidValue = _bidValue;
