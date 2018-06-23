@@ -81,6 +81,7 @@ module.exports = class AuctionLogic {
 
         let genesisBid = {
             isAskBid: true,
+            userHash:'',
             bidValue: channel.minBid
         }
 
@@ -94,11 +95,11 @@ module.exports = class AuctionLogic {
      * signature for adding bid
      */
     async proposeBid(params) {
-        const isAskBid = params.auctioneerAddress;
-        const userHash = params.assistantAddress;
-        const bidValue = params.challengePeriod;
+        const isAskBid = params.isAskBid;
+        const userHash = params.userHash;
+        const bidValue = params.bidValue;
 
-        const lastBid = getLastBid();
+        const lastBid = this.getLastBid();
 
         if (bidValue < lastBid.bidValue) {
             throw new Error('bidValue is too low')
@@ -106,6 +107,7 @@ module.exports = class AuctionLogic {
         
         const fingerprint = this.web3.utils.soliditySha3(
             'auctionBid',
+            isAskBid,
             userHash,
             bidValue
         );
@@ -139,26 +141,29 @@ module.exports = class AuctionLogic {
         );
 
         let signature1;
-        if (isAskBid == false) {
+        if (bid.isAskBid == false) {
             signature1 = await this.signByAuctioneer(fingerprint);
         } else {
             signature1 = await this.signByAssistant(fingerprint);
         }
 
         bid.signature1 = signature1;
-
-        let lastBid = getLastBid();
-        bid.previousBidHash = calculateBidHash(lastBid);
+        let lastBid = this.getLastBid();
+        bid.previousBidHash = this.calculateBidHash(lastBid);
 
         this.auctionStorage.bidchain.push(bid);
     }
 
     // Post bid to the blockchain
     async updateWinnerBid (winnerBid) {
-        await AuctionChannel.updateWinnerBid(
+        
+        if (winnerBid.isAskBid) {
+            throw new Error('AskBid cannot be a winner')
+        }
+        await this.auctionChannel.updateWinnerBid(
+            winnerBid.isAskBid,
             winnerBid.userHash,
             winnerBid.bidValue,
-            winnerBid.previousBidHash,
             winnerBid.signature0,
             winnerBid.signature1
         );
@@ -177,16 +182,15 @@ module.exports = class AuctionLogic {
         
         let signature = await this.signByAssistant(fingerprint);
 
-        await AuctionChannel.startChallengePeriod(
+        await this.auctionChannel.startChallengePeriod(
             signature,
             auctioneerAddress
         )
     }
 
-
     // Try to close the channel
     async tryClose () {
-        await this.auctionContract.tryClose();
+        await this.auctionChannel.tryClose();
     }
 
     // Sign data by assistant
@@ -214,7 +218,7 @@ module.exports = class AuctionLogic {
     // Save auctionStorage obj to the file
     saveStorage() {
         let path = __dirname + '/../data/storage/auctionStorage.json';
-        fs.writeFileSync(path, this.auctionStorage.join(',') , 'utf-8');
+        fs.writeFileSync(path, JSON.stringify(this.auctionStorage) , 'utf-8');
     }
 
     // Calculate hash of the bid
@@ -226,7 +230,8 @@ module.exports = class AuctionLogic {
 
     // Get the latest bid from the storage
     getLastBid() {
-        return auctionStorage.bidchain[auctionStorage.bidchain.size - 1];
+        let bidchainSize = this.auctionStorage.bidchain.length ;
+        return this.auctionStorage.bidchain[bidchainSize-1];
     }
 
     

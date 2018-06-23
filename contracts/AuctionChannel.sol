@@ -56,7 +56,6 @@ contract AuctionChannel is ECRecovery {
         bool _isAskBid,
         bytes _userHash,
         uint256 _bidValue,
-        bytes _previousAskBidHash,
         bytes _signatureAssistant,
         bytes _signatureAuctioneer
     ) 
@@ -65,15 +64,17 @@ contract AuctionChannel is ECRecovery {
         tryClose();
 
         require(phase != PHASE_CLOSED);
+
         require(!_isAskBid);
+        require(_bidValue > winnerBidValue);
+        require(_bidValue >= minBidValue);
 
         bytes32 _fingerprint = keccak256(
             abi.encodePacked(
                 "auctionBid",
                 _isAskBid,
                 _userHash,
-                _bidValue,
-                _previousAskBidHash
+                _bidValue
             )
         );
 
@@ -81,9 +82,7 @@ contract AuctionChannel is ECRecovery {
 
         require(auctioneer == recover(_fingerprint, _signatureAuctioneer));
         require(assistant == recover(_fingerprint, _signatureAssistant));
-        require(_bidValue > winnerBidValue);
-        require(_bidValue >= minBidValue);
-
+        
         winnerUserHash = _userHash;
         winnerBidValue = _bidValue;
     }

@@ -22,9 +22,22 @@ contract('Auction Logic', ([auctioneer, assistant]) => {
         const channel = await auctionLogic.proposeOpeningChannel(params);
         
         await auctionLogic.acceptOpeningChannel(channel);
-            
-        console.log(auctionLogic.auctionStorage);
     });
   
+    it('should receive bids', async () => {
+        const params = {
+            isAskBid: false,
+            userHash: 'jskfjdkgjkf',
+            bidValue: 20000000
+        }
+        const bid = await auctionLogic.proposeBid(params);
+        await auctionLogic.acceptBid(bid);
+            
+    });
+
+    it('should post winner bid to blockchain', async () => {
+        const bid = auctionLogic.getLastBid();
+        await auctionLogic.updateWinnerBid(bid);            
+    });
 
 });
