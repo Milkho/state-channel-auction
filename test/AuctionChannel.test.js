@@ -1,6 +1,5 @@
 const AuctionChannel = artifacts.require('AuctionChannel');
 
-const web3Utils = require('web3-utils');
 const Web3 = require('web3');
 
 contract('Auction Channel', ([auctioneer, assistant]) => {
@@ -20,16 +19,17 @@ contract('Auction Channel', ([auctioneer, assistant]) => {
             this.minBidValue
         );
         
-        const signatureAuctioneer = await this.web3.eth.sign(fingerprint, auctioneer);
-        const signatureAssistant = await this.web3.eth.sign(fingerprint, assistant);
+        const responseAuctioneer = await this.web3.eth.accounts.sign(fingerprint, "0xe098d7adee1b05c9fabe042c4b2144995bb73ae2a33357b8cd374160542d7193");
+        const responseAssistant = await this.web3.eth.accounts.sign(fingerprint, "0xf2f27021ecab3fe1d4cc0dc1b2c42bb2fb0b3a5f067bae57a283ccd2c98009d0");
+
 
         this.auction = await AuctionChannel.new(
             auctioneer,
             assistant,
             this.challengePeriod,
             this.minBidValue,
-            signatureAuctioneer,
-            signatureAssistant
+            responseAuctioneer.signature,
+            responseAssistant.signature
         );
                
     });
@@ -42,20 +42,21 @@ contract('Auction Channel', ([auctioneer, assistant]) => {
 
         const fingerprint = web3Utils.soliditySha3(
             'auctionBid',
+            false,
             userHash,
             bidValue,
             previousBidHash
         );
 
-        const signatureAuctioneer = await this.web3.eth.sign(fingerprint, auctioneer);
-        const signatureAssistant = await this.web3.eth.sign(fingerprint, assistant);
+        const responseAuctioneer = await this.web3.eth.accounts.sign(fingerprint, "0xe098d7adee1b05c9fabe042c4b2144995bb73ae2a33357b8cd374160542d7193");
+        const responseAssistant = await this.web3.eth.accounts.sign(fingerprint, "0xf2f27021ecab3fe1d4cc0dc1b2c42bb2fb0b3a5f067bae57a283ccd2c98009d0");
 
         await this.auction.updateWinnerBid(
             userHash,
             bidValue,
             previousBidHash,
-            signatureAssistant,
-            signatureAuctioneer
+            responseAssistant.signature,
+            responseAuctioneer.signature
         );
 
         const winnerUserHash = await this.auction.winnerUserHash.call();
