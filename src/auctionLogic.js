@@ -1,18 +1,18 @@
 const AuctionChannel = artifacts.require("AuctionChannel");
 
 const fs = require('fs');
-const Web3 = require('web3');
 
-export class AuctionLogic {
+module.exports = class AuctionLogic {
 
     /**
      * Constructor
      */
     constructor(
+        web3
     ) { 
         this.auctionStorage = {};
         this.auctionStorage.bidchain = [];
-        this.web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+        this.web3 = web3;
     }
 
     /**
@@ -56,9 +56,10 @@ export class AuctionLogic {
     async acceptOpeningChannel (channel) {
         const fingerprint = this.web3.utils.soliditySha3(
             'openingAuctionChannel',
-            auctioneer,
-            assistant,
-            challengePeriod
+            channel.auctioneer,
+            channel.assistant,
+            channel.challengePeriod,
+            channel.minBid
         );
 
         const signatureAssistant = await this.signByAssistant(fingerprint);
@@ -130,6 +131,7 @@ export class AuctionLogic {
     async acceptBid (bid) {
         const fingerprint = this.web3.utils.soliditySha3(
             'auctionBid',
+            bid.isAskBid,
             bid.userHash,
             bid.bidValue
         );
@@ -164,8 +166,12 @@ export class AuctionLogic {
     // Start the challenge period, putting channel closing into motion
     async startChallengePeriod() {
         const fingerprint = this.solSha3(
-            'startChallengePeriod'
-          );
+            'startChallengePeriod',
+            this.auctionStorage.auctioneer,
+            this.auctionStorage.assistant,
+            this.auctionStorage.challengePeriod,
+            this.auctionStorage.minBid
+        );
         
         let signature = await this.signByAssistant(fingerprint);
 
@@ -184,25 +190,29 @@ export class AuctionLogic {
     // Sign data by assistant
     async signByAssistant(fingerprint) {
         let assistantWallet;
-        if (fs.existsSync('../data/keys/assistantWallet.json')) {
-            assistantWallet = JSON.parse(fs.readFileSync('../data/keys/assistantWallet.json', 'utf8'));
+        let path = __dirname + '/../data/keys/assistantWallet.json';
+        if (fs.existsSync(path)) {
+            assistantWallet = JSON.parse(fs.readFileSync(path, 'utf8'));
         }
-        let signature = await this.web3.eth.accounts.sign(fingerprint, assistantWallet.privateKey);
-        return signature
+        let response = await this.web3.eth.accounts.sign(fingerprint, assistantWallet.privateKey);
+        return response.signature;
     }
 
      // Sign data by auctioneer
     async signByAuctioneer(fingerprint) {
-        if (fs.existsSync('../data/keys/auctioneerWallet.json')) {
-            auctioneerWallet = JSON.parse(fs.readFileSync('../data/keys/auctioneerWallet.json', 'utf8'));
+        let auctioneerWallet;
+        let path = __dirname +'/../data/keys/auctioneerWallet.json';
+        if (fs.existsSync(path)) {
+            auctioneerWallet = JSON.parse(fs.readFileSync(path, 'utf8'));
         }
-        let signature = await this.web3.eth.accounts.sign(fingerprint, auctioneerWallet.privateKey);
-        signature
+        let response = await this.web3.eth.accounts.sign(fingerprint, auctioneerWallet.privateKey);
+        return response.signature;
     }
 
     // Save auctionStorage obj to the file
     saveStorage() {
-        fs.writeFileSync('../data/storage/auctionStorage.json', this.auctionStorage.join(',') , 'utf-8');
+        let path = __dirname + '/../data/storage/auctionStorage.json';
+        fs.writeFileSync(path, this.auctionStorage.join(',') , 'utf-8');
     }
 
     // Calculate hash of the bid
