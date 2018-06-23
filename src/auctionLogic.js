@@ -36,12 +36,7 @@ export class AuctionLogic {
             minBid
         );
 
-        let auctioneerWallet;
-
-        if (fs.existsSync('./data/keys/auctioneerWallet.json')) {
-            auctioneerWallet = JSON.parse(fs.readFileSync('./data/keys/auctioneerWallet.json', 'utf8'));
-        }
-        const signatureAuctioneer = await this.web3.eth.accounts.sign(fingerprint, auctioneerWallet.privateKey);
+        const signatureAuctioneer = await this.signByAuctioneer(fingerprint);
 
         return {
             auctioneer,
@@ -66,11 +61,7 @@ export class AuctionLogic {
             challengePeriod
         );
 
-        let assistantWallet;
-        if (fs.existsSync('./data/keys/auctioneerWallet.json')) {
-            assistantWallet = JSON.parse(fs.readFileSync('./data/keys/auctioneerWallet.json', 'utf8'));
-        }
-        const signatureAssistant = await this.web3.eth.accounts.sign(fingerprint, assistantWallet.privateKey);
+        const signatureAssistant = await this.signByAssistant(fingerprint);
 
         this.auctionChannel = await AuctionChannel.new(
             channel.auctioneer,
@@ -117,19 +108,11 @@ export class AuctionLogic {
         );
     
         let signature0;
-        if (isAskBid == true) {
-            let auctioneerWallet;
-    
-            if (fs.existsSync('../data/keys/auctioneerWallet.json')) {
-                auctioneerWallet = JSON.parse(fs.readFileSync('../data/keys/auctioneerWallet.json', 'utf8'));
-            }
-            signature0 = await this.web3.eth.accounts.sign(fingerprint, auctioneerWallet.privateKey);
+
+        if (isAskBid == true) { 
+            signature0 = await this.signByAuctioneer(fingerprint);
         } else {
-            let assistantWallet;
-            if (fs.existsSync('../data/keys/assistantWallet.json')) {
-                assistantWallet = JSON.parse(fs.readFileSync('../data/keys/assistantWallet.json', 'utf8'));
-            }
-            signature0 = await this.web3.eth.accounts.sign(fingerprint, assistantWallet.privateKey);
+            signature0 = await this.signByAssistant(fingerprint);
         }
         
         return {
@@ -153,18 +136,9 @@ export class AuctionLogic {
 
         let signature1;
         if (isAskBid == false) {
-            let auctioneerWallet;
-    
-            if (fs.existsSync('../data/keys/auctioneerWallet.json')) {
-                auctioneerWallet = JSON.parse(fs.readFileSync('../data/keys/auctioneerWallet.json', 'utf8'));
-            }
-            signature1 = await this.web3.eth.accounts.sign(fingerprint, auctioneerWallet.privateKey);
+            signature1 = await this.signByAuctioneer(fingerprint);
         } else {
-            let assistantWallet;
-            if (fs.existsSync('../data/keys/assistantWallet.json')) {
-                assistantWallet = JSON.parse(fs.readFileSync('../data/keys/assistantWallet.json', 'utf8'));
-            }
-            signature1 = await this.web3.eth.accounts.sign(fingerprint, assistantWallet.privateKey);
+            signature1 = await this.signByAssistant(fingerprint);
         }
 
         bid.signature1 = signature1;
@@ -192,12 +166,8 @@ export class AuctionLogic {
         const fingerprint = this.solSha3(
             'startChallengePeriod'
           );
-      
-        let assistantWallet;
-        if (fs.existsSync('../data/keys/assistantWallet.json')) {
-            assistantWallet = JSON.parse(fs.readFileSync('../data/keys/assistantWallet.json', 'utf8'));
-        }
-        let signature = await this.web3.eth.accounts.sign(fingerprint, assistantWallet.privateKey);
+        
+        let signature = await this.signByAssistant(fingerprint);
 
         await AuctionChannel.startChallengePeriod(
             signature,
@@ -209,6 +179,25 @@ export class AuctionLogic {
     // Try to close the channel
     async tryClose () {
         await this.auctionContract.tryClose();
+    }
+
+    // Sign data by assistant
+    async signByAssistant(fingerprint) {
+        let assistantWallet;
+        if (fs.existsSync('../data/keys/assistantWallet.json')) {
+            assistantWallet = JSON.parse(fs.readFileSync('../data/keys/assistantWallet.json', 'utf8'));
+        }
+        let signature = await this.web3.eth.accounts.sign(fingerprint, assistantWallet.privateKey);
+        return signature
+    }
+
+     // Sign data by auctioneer
+    async signByAuctioneer(fingerprint) {
+        if (fs.existsSync('../data/keys/auctioneerWallet.json')) {
+            auctioneerWallet = JSON.parse(fs.readFileSync('../data/keys/auctioneerWallet.json', 'utf8'));
+        }
+        let signature = await this.web3.eth.accounts.sign(fingerprint, auctioneerWallet.privateKey);
+        signature
     }
 
     // Save auctionStorage obj to the file
@@ -227,4 +216,6 @@ export class AuctionLogic {
     getLastBid() {
         return auctionStorage.bidchain[auctionStorage.bidchain.size - 1];
     }
+
+    
 }
