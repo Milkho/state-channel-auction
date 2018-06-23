@@ -73,14 +73,16 @@ module.exports = class AuctionLogic {
             signatureAssistant
         );
 
-        let genesisBid;
-        genesisBid.isAskBid = true;
-        genesisBid.bidValue = channel.minBid;
-
         this.auctionStorage.auctioneer = channel.auctioneer;
         this.auctionStorage.assistant = channel.assistant;
         this.auctionStorage.challengePeriod = channel.challengePeriod;
         this.auctionStorage.minBid = channel.minBid;
+        this.auctionStorage.contractAddress = this.auctionChannel.address;
+
+        let genesisBid = {
+            isAskBid: true,
+            bidValue: channel.minBid
+        }
 
         this.auctionStorage.bidchain.push(genesisBid);
     }

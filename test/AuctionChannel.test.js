@@ -40,7 +40,7 @@ contract('Auction Channel', ([auctioneer, assistant]) => {
         const bidValue = 20000000;
         const previousBidHash = "fdsgfd";
 
-        const fingerprint = web3Utils.soliditySha3(
+        const fingerprint = this.web3.utils.soliditySha3(
             'auctionBid',
             false,
             userHash,
@@ -52,6 +52,7 @@ contract('Auction Channel', ([auctioneer, assistant]) => {
         const responseAssistant = await this.web3.eth.accounts.sign(fingerprint, "0xf2f27021ecab3fe1d4cc0dc1b2c42bb2fb0b3a5f067bae57a283ccd2c98009d0");
 
         await this.auction.updateWinnerBid(
+            false,
             userHash,
             bidValue,
             previousBidHash,
