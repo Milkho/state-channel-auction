@@ -19,7 +19,6 @@ contract AuctionChannel is ECRecovery {
     bytes public winnerUserHash;
     uint256 public winnerBidValue;
 
-    event Error (address msg);
 
     constructor
     (
@@ -54,6 +53,7 @@ contract AuctionChannel is ECRecovery {
     }
    
     function updateWinnerBid(
+        bool _isAskBid,
         bytes _userHash,
         uint256 _bidValue,
         bytes _previousAskBidHash,
@@ -65,10 +65,12 @@ contract AuctionChannel is ECRecovery {
         tryClose();
 
         require(phase != PHASE_CLOSED);
+        require(!_isAskBid);
 
         bytes32 _fingerprint = keccak256(
             abi.encodePacked(
                 "auctionBid",
+                _isAskBid,
                 _userHash,
                 _bidValue,
                 _previousAskBidHash
@@ -95,15 +97,21 @@ contract AuctionChannel is ECRecovery {
         require (phase == PHASE_OPEN);
 
         bytes32 _fingerprint = keccak256(
-            "startingChallengePeriod"
+            abi.encodePacked(
+                "startingChallengePeriod",
+                auctioneer,
+                assistant,
+                challengePeriod,
+                minBidValue
+            )
         );
 
         _fingerprint = toEthSignedMessageHash(_fingerprint);
 
         if (_signer == auctioneer) {
-            require(auctioneer == ECRecovery.recover(_fingerprint, _signature));
+            require(auctioneer == recover(_fingerprint, _signature));
         } else if (_signer == assistant) {
-            require(assistant == ECRecovery.recover(_fingerprint, _signature));
+            require(assistant == recover(_fingerprint, _signature));
         } else {
             return;
         }
