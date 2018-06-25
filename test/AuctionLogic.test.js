@@ -12,7 +12,7 @@ contract('Auction Logic', ([auctioneer, assistant]) => {
     this.minBidValue = 10000000;
     this.challengePeriod = 100;
     
-    it('should open auction', async () => {
+    it('should open the auction', async () => {
         const params = {
             auctioneerAddress: auctioneer,
             assistantAddress: assistant,
@@ -39,7 +39,15 @@ contract('Auction Logic', ([auctioneer, assistant]) => {
     it('should post winner bid to blockchain', async () => {
         const bid = auctionLogic.getLastBid();
         await auctionLogic.updateWinnerBid(bid); 
+    });
+
+    it('should start challenge period', async () => {
+        const bid = auctionLogic.startChallengePeriod();
+
         auctionLogic.saveStorage();     
     });
 
+    it('should close the auction', async () => {
+        await auctionLogic.tryClose(); 
+    });
 });
