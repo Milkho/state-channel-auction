@@ -44,7 +44,8 @@ contract('Auction Channel', ([auctioneer, assistant]) => {
             'auctionBid',
             false,
             userHash,
-            bidValue
+            bidValue,
+            previousBidHash
         );
 
         const responseAuctioneer = await this.web3.eth.accounts.sign(fingerprint, "0xe098d7adee1b05c9fabe042c4b2144995bb73ae2a33357b8cd374160542d7193");
@@ -54,6 +55,7 @@ contract('Auction Channel', ([auctioneer, assistant]) => {
             false,
             userHash,
             bidValue,
+            previousBidHash,
             responseAssistant.signature,
             responseAuctioneer.signature
         );

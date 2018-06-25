@@ -56,6 +56,7 @@ contract AuctionChannel is ECRecovery {
         bool _isAskBid,
         bytes _userHash,
         uint256 _bidValue,
+        bytes _previousBidHash,
         bytes _signatureAssistant,
         bytes _signatureAuctioneer
     ) 
@@ -74,7 +75,8 @@ contract AuctionChannel is ECRecovery {
                 "auctionBid",
                 _isAskBid,
                 _userHash,
-                _bidValue
+                _bidValue,
+                _previousBidHash
             )
         );
 

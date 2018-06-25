@@ -28,15 +28,33 @@ module.exports = class AuctionLogic {
         const challengePeriod = params.challengePeriod;
         const minBid = params.minBid;
 
-        const fingerprint = this.web3.utils.soliditySha3(
+        const channelFingerprint = this.web3.utils.soliditySha3(
             'openingAuctionChannel',
             auctioneer,
             assistant,
             challengePeriod,
             minBid
         );
+        const signatureAuctioneer = await this.signByAuctioneer(channelFingerprint);
 
-        const signatureAuctioneer = await this.signByAuctioneer(fingerprint);
+        let genesisBid = {
+            isAskBid: true,
+            userHash:'',
+            bidValue: minBid,
+            previousBidHash: ''      
+        }
+
+        const genesisBidFingerprint = this.web3.utils.soliditySha3(
+            'auctionBid',
+            genesisBid.isAskBid,
+            genesisBid.userHash,
+            genesisBid.bidValue,
+            genesisBid.previousBidHash
+        );
+        const genesisBidSigAuctioneer = await this.signByAuctioneer(genesisBidFingerprint);
+        genesisBid.signature0 = genesisBidSigAuctioneer;
+
+        this.auctionStorage.bidchain.push(genesisBid);
 
         return {
             auctioneer,
@@ -49,7 +67,7 @@ module.exports = class AuctionLogic {
 
     /**
      * Sign the opening channel tx by assistant, post it to the blockchain to open the channel
-     * and add genesis bid to the storage
+     * and sign genesis bid
      * @param channel object containing auction params and auctioneer's
      * signature for opening channel
      */
@@ -73,19 +91,24 @@ module.exports = class AuctionLogic {
             signatureAssistant
         );
 
+        let genesisBid = this.auctionStorage.bidchain[0];
+        const genesisBidFingerprint = this.web3.utils.soliditySha3(
+            'auctionBid',
+            genesisBid.isAskBid,
+            genesisBid.userHash,
+            genesisBid.bidValue,
+            genesisBid.previousBidHash
+        );
+        const genesisBidSigAssistant = await this.signByAssistant(genesisBidFingerprint);
+        this.auctionStorage.bidchain[0].signature1 = genesisBidSigAssistant;
+
         this.auctionStorage.auctioneer = channel.auctioneer;
         this.auctionStorage.assistant = channel.assistant;
         this.auctionStorage.challengePeriod = channel.challengePeriod;
         this.auctionStorage.minBid = channel.minBid;
         this.auctionStorage.contractAddress = this.auctionChannel.address;
 
-        let genesisBid = {
-            isAskBid: true,
-            userHash:'',
-            bidValue: channel.minBid
-        }
-
-        this.auctionStorage.bidchain.push(genesisBid);
+        
     }
   
     /**
@@ -95,21 +118,25 @@ module.exports = class AuctionLogic {
      * signature for adding bid
      */
     async proposeBid(params) {
+        const lastBid = this.getLastBid();
+
         const isAskBid = params.isAskBid;
         const userHash = params.userHash;
         const bidValue = params.bidValue;
-
-        const lastBid = this.getLastBid();
+        const previousBidHash =  this.calculateBidHash(lastBid);
+        
 
         if (bidValue < lastBid.bidValue) {
             throw new Error('bidValue is too low')
         }
         
+    
         const fingerprint = this.web3.utils.soliditySha3(
             'auctionBid',
             isAskBid,
             userHash,
-            bidValue
+            bidValue,
+            previousBidHash
         );
     
         let signature0;
@@ -124,6 +151,7 @@ module.exports = class AuctionLogic {
             isAskBid,
             userHash,
             bidValue,
+            previousBidHash,
             signature0
         }
     }
@@ -137,9 +165,10 @@ module.exports = class AuctionLogic {
             'auctionBid',
             bid.isAskBid,
             bid.userHash,
-            bid.bidValue
+            bid.bidValue,
+            bid.previousBidHash
         );
-
+        
         let signature1;
         if (bid.isAskBid == false) {
             signature1 = await this.signByAuctioneer(fingerprint);
@@ -164,6 +193,7 @@ module.exports = class AuctionLogic {
             winnerBid.isAskBid,
             winnerBid.userHash,
             winnerBid.bidValue,
+            winnerBid.previousBidHash,
             winnerBid.signature0,
             winnerBid.signature1
         );
@@ -223,9 +253,17 @@ module.exports = class AuctionLogic {
 
     // Calculate hash of the bid
     calculateBidHash(bid) {
+        let isAskBid = bid.isAskBid;
         let userHash = bid.userHash;
         let bidValue = bid.bidValue;
-        return this.web3.utils.soliditySha3(userHash + bidValue);
+        let previousBidHash = bid.previousBidHash;
+
+        return this.web3.utils.soliditySha3(
+            isAskBid, 
+            userHash, 
+            bidValue,
+            previousBidHash
+        );
     }
 
     // Get the latest bid from the storage

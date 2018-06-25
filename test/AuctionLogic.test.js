@@ -28,7 +28,8 @@ contract('Auction Logic', ([auctioneer, assistant]) => {
         const params = {
             isAskBid: false,
             userHash: 'jskfjdkgjkf',
-            bidValue: 20000000
+            bidValue: 20000000,
+            previousBidHash: "fdhdfg"
         }
         const bid = await auctionLogic.proposeBid(params);
         await auctionLogic.acceptBid(bid);
@@ -37,7 +38,8 @@ contract('Auction Logic', ([auctioneer, assistant]) => {
 
     it('should post winner bid to blockchain', async () => {
         const bid = auctionLogic.getLastBid();
-        await auctionLogic.updateWinnerBid(bid);            
+        await auctionLogic.updateWinnerBid(bid); 
+        auctionLogic.saveStorage();     
     });
 
 });
