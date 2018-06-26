@@ -39,7 +39,7 @@ module.exports = class AuctionLogic {
 
         let genesisBid = {
             isAskBid: true,
-            userHash:'',
+            user:'',
             bidValue: minBid,
             previousBidHash: ''      
         }
@@ -47,7 +47,7 @@ module.exports = class AuctionLogic {
         const genesisBidFingerprint = this.web3.utils.soliditySha3(
             'auctionBid',
             genesisBid.isAskBid,
-            genesisBid.userHash,
+            genesisBid.user,
             genesisBid.bidValue,
             genesisBid.previousBidHash
         );
@@ -95,7 +95,7 @@ module.exports = class AuctionLogic {
         const genesisBidFingerprint = this.web3.utils.soliditySha3(
             'auctionBid',
             genesisBid.isAskBid,
-            genesisBid.userHash,
+            genesisBid.user,
             genesisBid.bidValue,
             genesisBid.previousBidHash
         );
@@ -113,7 +113,7 @@ module.exports = class AuctionLogic {
   
     /**
      * Propose a bid, sign and return
-     * @param params bid params such as isAskBid, userHash, bidValue, 
+     * @param params bid params such as isAskBid, user, bidValue, 
      * @return new object containing auction params and proposal side
      * signature for adding bid
      */
@@ -121,7 +121,7 @@ module.exports = class AuctionLogic {
         const lastBid = this.getLastBid();
 
         const isAskBid = params.isAskBid;
-        const userHash = params.userHash;
+        const user = params.user;
         const bidValue = params.bidValue;
         const previousBidHash =  this.calculateBidHash(lastBid);
         
@@ -134,7 +134,7 @@ module.exports = class AuctionLogic {
         const fingerprint = this.web3.utils.soliditySha3(
             'auctionBid',
             isAskBid,
-            userHash,
+            user,
             bidValue,
             previousBidHash
         );
@@ -149,7 +149,7 @@ module.exports = class AuctionLogic {
         
         return {
             isAskBid,
-            userHash,
+            user,
             bidValue,
             previousBidHash,
             signature0
@@ -164,7 +164,7 @@ module.exports = class AuctionLogic {
         const fingerprint = this.web3.utils.soliditySha3(
             'auctionBid',
             bid.isAskBid,
-            bid.userHash,
+            bid.user,
             bid.bidValue,
             bid.previousBidHash
         );
@@ -191,7 +191,7 @@ module.exports = class AuctionLogic {
         }
         await this.auctionChannel.updateWinnerBid(
             winnerBid.isAskBid,
-            winnerBid.userHash,
+            winnerBid.user,
             winnerBid.bidValue,
             winnerBid.previousBidHash,
             winnerBid.signature0,
@@ -254,13 +254,13 @@ module.exports = class AuctionLogic {
     // Calculate hash of the bid
     calculateBidHash(bid) {
         let isAskBid = bid.isAskBid;
-        let userHash = bid.userHash;
+        let user = bid.user;
         let bidValue = bid.bidValue;
         let previousBidHash = bid.previousBidHash;
 
         return this.web3.utils.soliditySha3(
             isAskBid, 
-            userHash, 
+            user, 
             bidValue,
             previousBidHash
         );

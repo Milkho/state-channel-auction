@@ -27,7 +27,7 @@ contract('Auction Logic', ([auctioneer, assistant]) => {
     it('should receive bids', async () => {
         const params = {
             isAskBid: false,
-            userHash: 'jskfjdkgjkf',
+            user: 'jskfjdkgjkf',
             bidValue: 20000000,
             previousBidHash: "fdhdfg"
         }

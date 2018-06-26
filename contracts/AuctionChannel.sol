@@ -16,7 +16,7 @@ contract AuctionChannel is ECRecovery {
     uint256 public challengePeriod;
     uint256 public closingBlock;
 
-    bytes public winnerUserHash;
+    bytes public winnerUser;
     uint256 public winnerBidValue;
 
 
@@ -54,7 +54,7 @@ contract AuctionChannel is ECRecovery {
    
     function updateWinnerBid(
         bool _isAskBid,
-        bytes _userHash,
+        bytes _user,
         uint256 _bidValue,
         bytes _previousBidHash,
         bytes _signatureAssistant,
@@ -74,7 +74,7 @@ contract AuctionChannel is ECRecovery {
             abi.encodePacked(
                 "auctionBid",
                 _isAskBid,
-                _userHash,
+                _user,
                 _bidValue,
                 _previousBidHash
             )
@@ -85,7 +85,7 @@ contract AuctionChannel is ECRecovery {
         require(auctioneer == recover(_fingerprint, _signatureAuctioneer));
         require(assistant == recover(_fingerprint, _signatureAssistant));
         
-        winnerUserHash = _userHash;
+        winnerUser = _user;
         winnerBidValue = _bidValue;
     }
 
