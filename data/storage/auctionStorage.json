@@ -2,53 +2,20 @@
     "bidchain": [
         {
             "isAskBid": true,
-            "userHash": "",
-            "bidValue": 10000000
+            "user": "",
+            "bidValue": 2340328,
+            "previousBidHash": "",
+            "signature0": "0x9e5f0a82e15d8c7b9580c5d09ecd554116695227939ffd4fae3eba435bb75f2022c1199645c511b1bfca00c33557f922b78a9ff6c5e3a0cdcc6b98b9c117d34f1b",
+            "signature1": "0x67cdd3da55f5632c61e526febf9176f4b56f857649ad28b7d7fdfee863ef57a13925d2198904ed0175c6699613f40623549bd0568956c07a2a861177db4dd8271c"
         },
         {
             "isAskBid": false,
-            "userHash": "jskfjdkgjkf",
+            "user": "jskfjdkgjkf",
             "bidValue": 20000000,
-            "signature0": "0x92e18d13fbaa818ead322a720c42b9d89099983dc8a38b7aa8e6960f11121d0c5ae4745217efd602dee77c37c3cc82c6270e2bf2ac983cdbb5586e8156b8ab9a1b",
-            "signature1": "0xb0a35374e9e7c5e04848464d397ab92bb11ef118dc9625a766d68dabf9a3025523b158afbf9151df52ca62b6d8561994beebeef5a44e359152c14180036a53921b",
-            "previousBidHash": "0x9fdb0fb9fe6af151a3fdda7ebbd87ff43773f81b711dd5c5065f5e25b4b9b7ca"
-        },
-        {
-            "isAskBid": true,
-            "userHash": "",
-            "bidValue": 25000000,
-            "signature0": "0xb6f5bbe0b026d98adc77fa969826b237d3c9b0ce52db05595c6494c39dd2630e4bc692c786689dd25287dfb56393c16a398cf2c677736a402a4d24adaa116e121b",
-            "signature1": "0xa5065620177307218a58ff3d93c63e221e8fa0e5ce7bdb98f1fe6a03dba61d724b11727f37d41eb643972aeaa9a4f43fa5ca1a1346d09694aebd97276a28a3a01b",
-            "previousBidHash": "0x22130f33391f666d6169911168715666e0595cc2a5ac00b7dc9cb4177a7e7386"
-        },
-        {
-            "isAskBid": false,
-            "userHash": "fdgdfgdgfd",
-            "bidValue": 25000000,
-            "signature0": "0xa369f50ca4f7878f83bee770e46450093fd7fbb237b8fed7a19e187d94059dc1006f9d9a47245a271960dc89135d029dc5a25fc091b4cba8a0f706448634bc911c",
-            "signature1": "0x6e6f4721c6bb1ec53683928a0144e8dcce083643aeb13c15393f4dc7d6581205480291edbe5be63540fd361245d65d4ad9dfa16ffc96fff58e4738d7c92e8af21c",
-            "previousBidHash": "0xb456ab443c725d0d0eb17b896fded34a54d2b0d9454d18ee9d5a8a2045099e24"
-        },
-        {
-            "isAskBid": true,
-            "userHash": "",
-            "bidValue": 30000000,
-            "signature0": "0xa77af0170d0ea491b9ced42d94d8d12caed75448161286e110f9ea2c177c80763afbced97fa624e726caae4bcc911e9e65ee9c0ac4339b17d7c793ed6230859e1c",
-            "signature1": "0xf340a8646bb13f34e8da2ad60728fab1a54955e9181818a0760d9b42c5a78eb906a90b76a5dbe122acd30d69d828186f3316e059d9ba13323f1b4d9f7a3e2be11b",
-            "previousBidHash": "0xa23f98d713f9332aad95d8a83e84f3711663a8d672b895ee76a0893255d2cbe1"
-        },
-        {
-            "isAskBid": false,
-            "userHash": "sdkjfksdjf",
-            "bidValue": 40000000,
-            "signature0": "0x05e3e2a1c26f6ad99c8e56755d5b435f0a3731ce6f7ca0200d6e3a28abbee2f52e0b8fc1a36b58228dd5fc89ddac960ea3c07d577ed19d212e61b8e75ee23dab1b",
-            "signature1": "0xa213fc45a7739c7a226d3dda0b35ae60f387834684a15397cb3aa6b44f849be778278493a9441f6c0930cf34b943d2d5c2cd776c3a2a7eb474fedecb3c2cea431c",
-            "previousBidHash": "0x1ef4ed8847924514032a83a565d02b18255b0fdd5d80ec325249da35284816e7"
+            "previousBidHash": "0x026f1bbeb5c7a014dbd987e9cdb8f1d9881db2d693088cfa1faab39a7c0e156d",
+            "signature0": "0xbe0ab22e7389a4e3cfe89d021377b22153a59823b7f92d879a51037777fb775a2d4a43103390b0bee88814687246996d735e34647040cec96c593110097f83c71c",
+            "signature1": "0x5136cc27298aab7c6dae985941f4ef0cf8ced811059c22ee51d5c738a15959e0127c1b078db263680d7ae747901f70f82cbcd7359b2954e421520d11de11940d1b"
         }
     ],
-    "auctioneer": "0x1af4bf7a9edbbd4a43ec3f04ca95df797303d41d",
-    "assistant": "0x1dd36cd08ed1a804193b20b787ce6ca21a32a83b",
-    "challengePeriod": 100,
-    "minBid": 10000000,
-    "contractAddress": "0x4ab65f388cce6a71ed9fec4af3692ae7dfcb9000"
+    "contractAddress": "0xa605e88a57dd120a49ce5a8f4d882eff6c71080e"
 }
