@@ -7,7 +7,7 @@ module.exports =  function(deployer, network) {
     const web3 = new Web3(Web3.currentProvider);
 
     let secrets;
-    let secretsPath = __dirname + 'secrets.json';
+    let secretsPath = __dirname + '/../secrets.json';
     if (fs.existsSync('secrets.json')) {
         secrets = JSON.parse(fs.readFileSync(secretsPath, 'utf8'));
     } else {
