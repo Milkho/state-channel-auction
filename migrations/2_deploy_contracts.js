@@ -8,7 +8,7 @@ module.exports =  function(deployer, network, accounts) {
 
     let auctioneer = "0xf823f0F90a1f351Ae04724247e096A2D95F3908F";
     let assistant = "0x08480524f01A797596eF32dee86A01b80BF4A9DA";
-    let challengePeriod = 100;
+    let challengePeriod = 720; // 720 blocks ~ 3 hours
     let minBidValue = 10000000;
 
     const fingerprint = web3.utils.soliditySha3(
@@ -42,7 +42,7 @@ module.exports =  function(deployer, network, accounts) {
         minBidValue,
         responseAuctioneer.signature,
         responseAssistant.signature,
-        { gas: 4200000}
+        { gas: 1500000}
     );
 
 
