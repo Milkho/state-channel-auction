@@ -22,13 +22,13 @@ module.exports = class AuctionLogic {
 
     /**
      * Propose a bid, sign and return
-     * @param params bid params such as isAskBid, user, bidValue, 
+     * @param params bid params such as isAskBid, bidder, bidValue, 
      * @return new object containing auction params and proposal side
      * signature for adding bid
      */
     async proposeBid(params) {
         const isAskBid = params.isAskBid;
-        const user = params.user;
+        const bidder = params.bidder;
         const bidValue = params.bidValue;
 
         let previousBidHash = "";
@@ -44,7 +44,7 @@ module.exports = class AuctionLogic {
         const fingerprint = this.web3.utils.soliditySha3(
             'auctionBid',
             isAskBid,
-            user,
+            bidder,
             bidValue,
             previousBidHash
         );
@@ -59,7 +59,7 @@ module.exports = class AuctionLogic {
 
         return {
             isAskBid,
-            user,
+            bidder,
             bidValue,
             previousBidHash,
             signature0
@@ -74,7 +74,7 @@ module.exports = class AuctionLogic {
         const fingerprint = this.web3.utils.soliditySha3(
             'auctionBid',
             bid.isAskBid,
-            bid.user,
+            bid.bidder,
             bid.bidValue,
             bid.previousBidHash
         );
@@ -98,7 +98,7 @@ module.exports = class AuctionLogic {
         }
         await this.auctionChannel.updateWinnerBid(
             winnerBid.isAskBid,
-            winnerBid.user,
+            winnerBid.bidder,
             winnerBid.bidValue,
             winnerBid.previousBidHash,
             winnerBid.signature0,
@@ -142,13 +142,13 @@ module.exports = class AuctionLogic {
     // Calculate hash of the bid
     calculateBidHash(bid) {
         let isAskBid = bid.isAskBid;
-        let user = bid.user;
+        let bidder = bid.bidder;
         let bidValue = bid.bidValue;
         let previousBidHash = bid.previousBidHash;
 
         return this.web3.utils.soliditySha3(
             isAskBid,
-            user,
+            bidder,
             bidValue,
             previousBidHash
         );

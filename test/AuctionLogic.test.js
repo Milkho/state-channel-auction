@@ -5,7 +5,7 @@ const AuctionLogic = require('../src/auctionLogic');
 
 contract('Auction Logic', ([auctioneer, assistant]) => {
 
-    const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+    const web3 = new Web3(Web3.currentProvider);
 
     this.minBidValue = 10000000;
     this.challengePeriod = 100;
@@ -38,7 +38,7 @@ contract('Auction Logic', ([auctioneer, assistant]) => {
     it('should receive genesis bid', async () => {
         const genesisBid = {
             isAskBid: true,
-            user: '',
+            bidder: '',
             bidValue: 2340328,
             previousBidHash: "fdhdfg"
         }
@@ -50,7 +50,7 @@ contract('Auction Logic', ([auctioneer, assistant]) => {
     it('should receive bids', async () => {
         const params = {
             isAskBid: false,
-            user: 'jskfjdkgjkf',
+            bidder: 'jskfjdkgjkf',
             bidValue: 20000000,
             previousBidHash: "fdhdfg"
         }
@@ -67,5 +67,6 @@ contract('Auction Logic', ([auctioneer, assistant]) => {
 
     it('should close the auction', async () => {
         await this.auctionLogic.tryClose(); 
+        this.auctionLogic.saveStorage();
     });
 });

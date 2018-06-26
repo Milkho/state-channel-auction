@@ -2,20 +2,20 @@
     "bidchain": [
         {
             "isAskBid": true,
-            "user": "",
+            "bidder": "",
             "bidValue": 2340328,
             "previousBidHash": "",
-            "signature0": "0x9e5f0a82e15d8c7b9580c5d09ecd554116695227939ffd4fae3eba435bb75f2022c1199645c511b1bfca00c33557f922b78a9ff6c5e3a0cdcc6b98b9c117d34f1b",
-            "signature1": "0x67cdd3da55f5632c61e526febf9176f4b56f857649ad28b7d7fdfee863ef57a13925d2198904ed0175c6699613f40623549bd0568956c07a2a861177db4dd8271c"
+            "signature0": "0xad411942341dcafde594f093ee5af2c59358ee4ea42abd7bb34fc962a943f7e2775b5fc61c09b35e3064dbcdd23a0fa62837c1de7a4a7c55c4e50adb0cd671b41c",
+            "signature1": "0x80eb039853851f9c7bcda49772b459ab0d2435a871aa1cf29ea9e5c9aca02f82425d067ba09605e8acab612038b51b59621bc5e3d0cc57820b0e7f9e40bd94701c"
         },
         {
             "isAskBid": false,
-            "user": "jskfjdkgjkf",
+            "bidder": "jskfjdkgjkf",
             "bidValue": 20000000,
             "previousBidHash": "0x026f1bbeb5c7a014dbd987e9cdb8f1d9881db2d693088cfa1faab39a7c0e156d",
-            "signature0": "0xbe0ab22e7389a4e3cfe89d021377b22153a59823b7f92d879a51037777fb775a2d4a43103390b0bee88814687246996d735e34647040cec96c593110097f83c71c",
-            "signature1": "0x5136cc27298aab7c6dae985941f4ef0cf8ced811059c22ee51d5c738a15959e0127c1b078db263680d7ae747901f70f82cbcd7359b2954e421520d11de11940d1b"
+            "signature0": "0x9160a2c84aee3a2db22df01d8d89be15a5c0004e3f20a31f07f04a07686733c5209a931190f61986996dbf77b76825254bacd8ea3502656cfb424418aec038871b",
+            "signature1": "0x2e7d6d0445f9765ee03726b0ea820853a96b58a3f95edd7eb8542c6b97c461de47e67cb5b63e1be79a507548fec9ff4b6f924a2578710693316b9a5ec5c6e1381c"
         }
     ],
-    "contractAddress": "0xa605e88a57dd120a49ce5a8f4d882eff6c71080e"
+    "contractAddress": "0xadbaf18d6db236bcf4342c366b7a8e9851496539"
 }

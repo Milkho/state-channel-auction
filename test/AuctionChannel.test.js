@@ -6,7 +6,7 @@ const Web3 = require('web3');
 
 contract('Auction Channel', ([auctioneer, assistant]) => {
 
-    this.web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+    this.web3 = new Web3(Web3.currentProvider);
 
     this.minBidValue = 10000000;
     this.challengePeriod = 1;
@@ -37,14 +37,14 @@ contract('Auction Channel', ([auctioneer, assistant]) => {
   
 
     it('should start winner bid', async () => {
-        const user = "user123ds";
+        const bidder = "bidder123ds";
         const bidValue = 20000000;
         const previousBidHash = "fdsgfd";
 
         const fingerprint = this.web3.utils.soliditySha3(
             'auctionBid',
             false,
-            user,
+            bidder,
             bidValue,
             previousBidHash
         );
@@ -54,29 +54,29 @@ contract('Auction Channel', ([auctioneer, assistant]) => {
 
         await this.auction.updateWinnerBid(
             false,
-            user,
+            bidder,
             bidValue,
             previousBidHash,
             responseAssistant.signature,
             responseAuctioneer.signature
         );
 
-        const winnerUser = await this.auction.winnerUser.call();
+        const winnerBidder = await this.auction.winnerBidder.call();
         const winnerBidValue = await this.auction.winnerBidValue.call();
 
-        assert.equal(winnerUser, web3.fromUtf8(user));
+        assert.equal(winnerBidder, web3.fromUtf8(bidder));
         assert.equal(winnerBidValue.toNumber(), bidValue);        
     });
 
     it('should update winner bid with higher bid', async () => {
-        const user = "user123ds";
+        const bidder = "bidder123ds";
         const bidValue = 286000000;
         const previousBidHash = "fdsgfd";
 
         const fingerprint = this.web3.utils.soliditySha3(
             'auctionBid',
             false,
-            user,
+            bidder,
             bidValue,
             previousBidHash
         );
@@ -86,29 +86,29 @@ contract('Auction Channel', ([auctioneer, assistant]) => {
 
         await this.auction.updateWinnerBid(
             false,
-            user,
+            bidder,
             bidValue,
             previousBidHash,
             responseAssistant.signature,
             responseAuctioneer.signature
         );
 
-        const winnerUser = await this.auction.winnerUser.call();
+        const winnerBidder = await this.auction.winnerBidder.call();
         const winnerBidValue = await this.auction.winnerBidValue.call();
 
-        assert.equal(winnerUser, web3.fromUtf8(user));
+        assert.equal(winnerBidder, web3.fromUtf8(bidder));
         assert.equal(winnerBidValue.toNumber(), bidValue);        
     });
 
     it('should not update winner bid with lower bid', async () => {
-        const user = "user123ds";
+        const bidder = "bidder123ds";
         const bidValue = 26000000;
         const previousBidHash = "fdsgfd";
 
         const fingerprint = this.web3.utils.soliditySha3(
             'auctionBid',
             false,
-            user,
+            bidder,
             bidValue,
             previousBidHash
         );
@@ -119,7 +119,7 @@ contract('Auction Channel', ([auctioneer, assistant]) => {
         await assertRevert(
             this.auction.updateWinnerBid(
                 false,
-                user,
+                bidder,
                 bidValue,
                 previousBidHash,
                 responseAssistant.signature,
