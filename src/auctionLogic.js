@@ -106,25 +106,6 @@ module.exports = class AuctionLogic {
         );
     }
 
-
-    // Start the challenge period, putting channel closing into motion
-    async startChallengePeriod() {
-        const fingerprint = this.solSha3(
-            'startChallengePeriod',
-            this.auctionStorage.auctioneer,
-            this.auctionStorage.assistant,
-            this.auctionStorage.challengePeriod,
-            this.auctionStorage.minBid
-        );
-
-        let signature = await this.signByAssistant(fingerprint);
-
-        await this.auctionChannel.startChallengePeriod(
-            signature,
-            auctioneerAddress
-        )
-    }
-
     // Try to close the channel
     async tryClose() {
         await this.auctionChannel.tryClose();

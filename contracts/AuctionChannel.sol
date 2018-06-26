@@ -87,38 +87,10 @@ contract AuctionChannel is ECRecovery {
         
         winnerUser = _user;
         winnerBidValue = _bidValue;
-    }
 
-    function startChallengePeriod(
-        bytes _signature,
-        address _signer
-    )
-        external
-    {
-        require (phase == PHASE_OPEN);
-
-        bytes32 _fingerprint = keccak256(
-            abi.encodePacked(
-                "startingChallengePeriod",
-                auctioneer,
-                assistant,
-                challengePeriod,
-                minBidValue
-            )
-        );
-
-        _fingerprint = toEthSignedMessageHash(_fingerprint);
-
-        if (_signer == auctioneer) {
-            require(auctioneer == recover(_fingerprint, _signature));
-        } else if (_signer == assistant) {
-            require(assistant == recover(_fingerprint, _signature));
-        } else {
-            return;
-        }
-
+        // start challenge period
         closingBlock = block.number + challengePeriod;
-        phase = PHASE_CHALLENGE;
+        phase = PHASE_CHALLENGE;  
     }
 
     function tryClose() public {

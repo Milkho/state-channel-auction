@@ -64,11 +64,6 @@ contract('Auction Logic', ([auctioneer, assistant]) => {
         await this.auctionLogic.updateWinnerBid(bid); 
     });
 
-    it('should start challenge period', async () => {
-        this.auctionLogic.startChallengePeriod();
-
-        this.auctionLogic.saveStorage();     
-    });
 
     it('should close the auction', async () => {
         await this.auctionLogic.tryClose(); 

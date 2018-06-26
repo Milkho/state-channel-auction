@@ -9,7 +9,7 @@ contract('Auction Channel', ([auctioneer, assistant]) => {
     this.web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 
     this.minBidValue = 10000000;
-    this.challengePeriod = 0;
+    this.challengePeriod = 1;
     
 
     it('should create auction', async () => {
@@ -70,7 +70,7 @@ contract('Auction Channel', ([auctioneer, assistant]) => {
 
     it('should update winner bid with higher bid', async () => {
         const user = "user123ds";
-        const bidValue = 26000000;
+        const bidValue = 286000000;
         const previousBidHash = "fdsgfd";
 
         const fingerprint = this.web3.utils.soliditySha3(
@@ -130,15 +130,6 @@ contract('Auction Channel', ([auctioneer, assistant]) => {
 
     it('should start challenge period', async () => {
         const PHASE_CHALLENGE = 1;
-        const fingerprint = this.web3.utils.soliditySha3(
-            "startingChallengePeriod",
-            auctioneer,
-            assistant,
-            this.challengePeriod,
-            this.minBidValue
-        );
-        const responseAuctioneer = await this.web3.eth.accounts.sign(fingerprint, "0xe098d7adee1b05c9fabe042c4b2144995bb73ae2a33357b8cd374160542d7193");
-        await this.auction.startChallengePeriod(responseAuctioneer.signature, auctioneer);
         let phase = await this.auction.phase.call();
         
         assert.equal(phase.toNumber(), PHASE_CHALLENGE);
