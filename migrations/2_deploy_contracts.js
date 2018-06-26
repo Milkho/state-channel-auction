@@ -2,14 +2,30 @@ const AuctionChannel = artifacts.require('AuctionChannel');
 const Web3 = require('web3');
 const fs = require('fs');
 
-module.exports =  function(deployer, network, accounts) {
+module.exports =  function(deployer, network) {
    
     const web3 = new Web3(Web3.currentProvider);
 
-    let auctioneer = "0xf823f0F90a1f351Ae04724247e096A2D95F3908F";
-    let assistant = "0x08480524f01A797596eF32dee86A01b80BF4A9DA";
+    let secrets;
+    let secretsPath = __dirname + 'secrets.json';
+    if (fs.existsSync('secrets.json')) {
+        secrets = JSON.parse(fs.readFileSync(secretsPath, 'utf8'));
+    } else {
+        throw new Error('No secrets.json found!');
+    }
+
+    const isMainNet = network === 'mainet';
+
+    let auctioneer = "0xF9F59233150830E32b221ddC0867a0E549d8eCD0";
+    let assistant = "0x50Eab0373fD3Acf72cd85eFCf973EE75C5dA244c";
+
+    if (isMainNet) {
+        auctioneer = "0xef0f527e21C4BC56cE9122D8d92F59c018A58319";
+        assistant = "0x2Da262A1B2eeAB1F2b4c1F1317Ae43cdE0b5B8B5";
+    }
+
     let challengePeriod = 720; // 720 blocks ~ 3 hours
-    let minBidValue = 10000000;
+    let minBidValue = 50000;
 
     const fingerprint = web3.utils.soliditySha3(
         "openingAuctionChannel",
@@ -31,8 +47,8 @@ module.exports =  function(deployer, network, accounts) {
         assistantWallet = JSON.parse(fs.readFileSync(asPath, 'utf8'));
     }
     
-    const responseAuctioneer = web3.eth.accounts.sign(fingerprint, auctioneerWallet.privateKey);
-    const responseAssistant = web3.eth.accounts.sign(fingerprint, assistantWallet.privateKey);
+    const responseAuctioneer = web3.eth.accounts.sign(fingerprint, isMainNet ? secrets.keys.auctioneer : auctioneerWallet.privateKey);
+    const responseAssistant = web3.eth.accounts.sign(fingerprint, isMainNet ? secrets.keys.assistant : assistantWallet.privateKey);
 
     deployer.deploy(
         AuctionChannel,
