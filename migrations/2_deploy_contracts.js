@@ -14,7 +14,7 @@ module.exports =  function(deployer, network) {
         throw new Error('No secrets.json found!');
     }
 
-    const isMainNet = network === 'mainet';
+    const isMainNet = network === 'mainnet';
 
     let auctioneer = "0xF9F59233150830E32b221ddC0867a0E549d8eCD0";
     let assistant = "0x50Eab0373fD3Acf72cd85eFCf973EE75C5dA244c";
