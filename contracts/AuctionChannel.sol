@@ -1,12 +1,12 @@
 pragma solidity ^0.4.24;
 
-import "./ECRecovery.sol"; 
+import "openzeppelin-solidity/contracts/ECRecovery.sol";
 
 
 /**
  * @title Auction state channel
  */
-contract AuctionChannel is ECRecovery {
+contract AuctionChannel {
     
     // phase constants
     uint8 public constant PHASE_OPEN = 0;
@@ -70,10 +70,10 @@ contract AuctionChannel is ECRecovery {
             )
         );
 
-        _fingerprint = toEthSignedMessageHash(_fingerprint);
+        _fingerprint = ECRecovery.toEthSignedMessageHash(_fingerprint);
 
-        require(_auctioneer == recover(_fingerprint, _signatureAuctioneer));
-        require(_assistant == recover(_fingerprint, _signatureAssistant));
+        require(_auctioneer == ECRecovery.recover(_fingerprint, _signatureAuctioneer));
+        require(_assistant == ECRecovery.recover(_fingerprint, _signatureAssistant));
 
         auctioneer = _auctioneer;
         assistant = _assistant;
@@ -118,10 +118,10 @@ contract AuctionChannel is ECRecovery {
             )
         );
 
-        _fingerprint = toEthSignedMessageHash(_fingerprint);
+        _fingerprint = ECRecovery.toEthSignedMessageHash(_fingerprint);
 
-        require(auctioneer == recover(_fingerprint, _signatureAuctioneer));
-        require(assistant == recover(_fingerprint, _signatureAssistant));
+        require(auctioneer == ECRecovery.recover(_fingerprint, _signatureAuctioneer));
+        require(assistant == ECRecovery.recover(_fingerprint, _signatureAssistant));
         
         winnerBidder = _bidder;
         winnerBidValue = _bidValue;

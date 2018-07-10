@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "dependencies": {
     "truffle-hdwallet-provider": "0.0.3",
-    "web3": "^1.0.0-beta.34"
+    "web3": "^1.0.0-beta.34",
+    "openzeppelin-solidity": "^1.10.0"
   },
   "devDependencies": {
     "solium": "^1.1.3"
