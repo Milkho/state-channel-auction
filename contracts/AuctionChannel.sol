@@ -9,18 +9,16 @@ import "openzeppelin-solidity/contracts/ECRecovery.sol";
 contract AuctionChannel {
     
     // phase constants
-    uint8 public constant PHASE_OPEN = 0;
-    uint8 public constant PHASE_CHALLENGE = 1;
-    uint8 public constant PHASE_CLOSED = 2;
-    
+    enum Phase {OPEN, CHALLENGE, CLOSED}
+
+    // current phase
+    Phase public phase;
+
     // auctioneer address
     address public auctioneer;
 
     // assistant address
     address public assistant;
-
-    // current phase
-    uint8 public phase;
 
     // minimum bid value
     uint256 public minBidValue;
@@ -102,7 +100,7 @@ contract AuctionChannel {
     {
         tryClose();
 
-        require(phase != PHASE_CLOSED);
+        require(phase != Phase.CLOSED);
 
         require(!_isAskBid);
         require(_bidValue > winnerBidValue);
@@ -128,15 +126,15 @@ contract AuctionChannel {
 
         // start challenge period
         closingBlock = block.number + challengePeriod;
-        phase = PHASE_CHALLENGE;  
+        phase = Phase.CHALLENGE;  
     }
 
     /**
      * @dev Close the auction
      */
     function tryClose() public {
-        if (phase == PHASE_CHALLENGE && block.number > closingBlock) {
-            phase = PHASE_CLOSED;
+        if (phase == Phase.CHALLENGE && block.number > closingBlock) {
+            phase = Phase.CLOSED;
         }
     }
 
