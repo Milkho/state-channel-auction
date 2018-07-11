@@ -9,7 +9,7 @@ import "openzeppelin-solidity/contracts/ECRecovery.sol";
 contract AuctionChannel {
     
     // phase constants
-    enum Phase {OPEN, CHALLENGE, CLOSED}
+    enum Phase { OPEN, CHALLENGE, CLOSED }
 
     // current phase
     Phase public phase;

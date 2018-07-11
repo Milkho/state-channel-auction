@@ -17,7 +17,15 @@ module.exports = class AuctionLogic {
         this.auctionChannel = auctionChannel;
         this.auctionStorage = {};
         this.auctionStorage.bidchain = [];
+   
+    }
+
+    async init() {
         this.auctionStorage.contractAddress = this.auctionChannel.address;
+        this.auctionStorage.auctioneer = await this.auctionChannel.auctioneer.call();
+        this.auctionStorage.assistant = await this.auctionChannel.assistant.call();
+        this.auctionStorage.challengePeriod = await this.auctionChannel.challengePeriod.call();
+        this.auctionStorage.minBid = await this.auctionChannel.minBidValue.call();
     }
 
     /**

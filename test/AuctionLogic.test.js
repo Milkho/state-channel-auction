@@ -34,6 +34,7 @@ contract('Auction Logic', (accounts) => {
         );
 
         this.auctionLogic = new AuctionLogic(web3, this.auction);
+        await this.auctionLogic.init();
     });
     
     it('should receive genesis bid', async () => {
