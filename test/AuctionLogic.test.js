@@ -3,10 +3,11 @@ const AuctionChannel = artifacts.require('AuctionChannel');
 const Web3 = require('web3');
 const AuctionLogic = require('../src/auctionLogic');
 
-contract('Auction Logic', ([auctioneer, assistant]) => {
+contract('Auction Logic', (accounts) => {
 
     const web3 = new Web3(Web3.currentProvider);
-
+    const auctioneer = "0xf823f0F90a1f351Ae04724247e096A2D95F3908F";
+    const assistant = "0x08480524f01A797596eF32dee86A01b80BF4A9DA";
     this.minBidValue = 10000000;
     this.challengePeriod = 100;
     
@@ -20,8 +21,8 @@ contract('Auction Logic', ([auctioneer, assistant]) => {
             this.minBidValue
         );
         
-        const responseAuctioneer = await web3.eth.accounts.sign(fingerprint, "0xe098d7adee1b05c9fabe042c4b2144995bb73ae2a33357b8cd374160542d7193");
-        const responseAssistant = await web3.eth.accounts.sign(fingerprint, "0xf2f27021ecab3fe1d4cc0dc1b2c42bb2fb0b3a5f067bae57a283ccd2c98009d0");
+        const responseAuctioneer = await web3.eth.accounts.sign(fingerprint, "0x630f38905e0b91fcf3cffac1b3c4917ec84669d36c2e5559c2b4e32d81cde979");
+        const responseAssistant = await web3.eth.accounts.sign(fingerprint, "0x420ac85383fb5133c21c8150d8f9d6d926ea7a983db37f1ee113c88895efb33e");
 
         this.auction = await AuctionChannel.new(
             auctioneer,
